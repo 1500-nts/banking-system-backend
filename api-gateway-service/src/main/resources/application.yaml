@@ -56,7 +56,7 @@ server:
 # requests. Must be an exact origin, not "*" - required for the HttpOnly
 # refresh-token cookie to work cross-origin. Comma-separated for multiple.
 cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://nts1500bank.netlify.app}
 
 # IMPORTANT: must be identical to auth-service's jwt.secret - this is the
 # only place tokens are verified in the whole system.
