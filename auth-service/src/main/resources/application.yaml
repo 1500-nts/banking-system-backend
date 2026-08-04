@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  port: ${PORT:8096}
+
+jwt:
+  secret: ${JWT_SECRET}
+  refresh-secret: ${JWT_REFRESH_SECRET}
+  issuer: ${JWT_ISSUER}
+  access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS}
+  refresh-ttl-seconds: ${JWT_REFRESH_TTL_SECONDS}
+
+
+app:
+  cookie:
+    secure: ${COOKIE_SECURE:true}
+    same-site: ${COOKIE_SAME_SITE:None}
+    domain: ${COOKIE_DOMAIN:}
+
+
+admin:
+  bootstrap:
+    email: ${ADMIN_BOOTSTRAP_EMAIL}
+    password: ${ADMIN_BOOTSTRAP_PASSWORD}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

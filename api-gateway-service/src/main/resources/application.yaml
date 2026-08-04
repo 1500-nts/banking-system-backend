@@ -1,0 +1,69 @@
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: ${AUTH_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
+        - id: account-service
+          uri: ${ACCOUNT_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/accounts/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
+        - id: transaction-service
+          uri: ${TRANSACTION_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/transactions/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
+        - id: payment-service
+          uri: ${PAYMENT_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+
+server:
+  port: ${PORT:8090}
+
+# The frontend origin(s) allowed to make credentialed (cookie-carrying)
+# requests. Must be an exact origin, not "*" - required for the HttpOnly
+# refresh-token cookie to work cross-origin. Comma-separated for multiple.
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+# IMPORTANT: must be identical to auth-service's jwt.secret - this is the
+# only place tokens are verified in the whole system.
+jwt:
+  secret: ${JWT_SECRET}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

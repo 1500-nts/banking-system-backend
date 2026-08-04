@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: payment-service
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    properties:
+      security.protocol: SASL_SSL
+      sasl.mechanism: SCRAM-SHA-256
+      sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
+      ssl.truststore.type: PEM
+      ssl.truststore.certificates: ${KAFKA_CA_CERT}
+    consumer:
+      group-id: account-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: ${PORT:8093}
+
+# Razorpay Configuration
+# NOTE: key-id/key-secret below are hardcoded plaintext (same issue as the
+# DB password above) - these look like real Razorpay test-mode keys, not
+# placeholders. Move all three to env vars and rotate key-secret before
+# this goes anywhere near a shared/public repo.
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID}
+  key-secret: ${RAZORPAY_KEY_SECRET}
+  # Set this in your Razorpay Dashboard -> Settings -> Webhooks when you
+  # create the webhook, then put the SAME value here. Required now -
+  # PaymentController rejects any webhook call if this doesn't match.
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
