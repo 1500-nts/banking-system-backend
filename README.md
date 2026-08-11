@@ -3,6 +3,9 @@
 A distributed banking platform built with Spring Boot, demonstrating microservices patterns including event-driven communication (Kafka), the SAGA pattern for distributed transactions, real-time fraud detection, and API gateway routing with rate limiting.
 
 ---
+**Live demo:**
+- Frontend: **https://nts1500bank.netlify.app/**
+- Backend: **https://api-gateway-service-erz3.onrender.com/**
 
 ## Tech Stack
 
