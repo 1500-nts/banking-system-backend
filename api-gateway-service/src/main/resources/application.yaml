@@ -51,6 +51,7 @@ spring:
 
 server:
   port: ${PORT:8090}
+  forward-headers-strategy: framework
 
 # The frontend origin(s) allowed to make credentialed (cookie-carrying)
 # requests. Must be an exact origin, not "*" - required for the HttpOnly
